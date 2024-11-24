@@ -1,7 +1,9 @@
 package org.example.goldproduct.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.goldproduct.Model.Customer;
 import org.example.goldproduct.Model.GoldProduct;
+import org.example.goldproduct.Service.CustomerService;
 import org.example.goldproduct.Service.GoldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,39 +23,44 @@ import java.util.List;
 public class GoldController {
 
     GoldService service;
-     public String uploadDirectory=System.getProperty("user.dir") + "/src/main/webimage/images";
+
+ //    public String uploadDirectory=System.getProperty("user.dir") + "/src/main/webimage/images";
     @Autowired
     public GoldController(GoldService service) {
         this.service = service;
     }
+
+
+
 
     @GetMapping("/products")
     public List<GoldProduct> getGoldProducts() {
         return service.getGoldProducts();
     }
     @PostMapping("/products/add")
-    public ResponseEntity<?> addProduct( @RequestParam("product") String productJson,
-                                         @RequestParam("image") MultipartFile imageFile){
+    public ResponseEntity<?> addProduct( @ModelAttribute GoldProduct productJson){
         try {
-            if (imageFile.isEmpty()) {
-                return new ResponseEntity<>("Image file is missing", HttpStatus.BAD_REQUEST);
-            }
+//            if (imageFile.isEmpty()) {
+//                return new ResponseEntity<>("Image file is missing", HttpStatus.BAD_REQUEST);
+//            }
 
-            System.out.println(imageFile);
-            ObjectMapper objectMapper = new ObjectMapper();
-            GoldProduct product = objectMapper.readValue(productJson, GoldProduct.class);
-
-            String originalFileName = imageFile.getOriginalFilename();
-            Path fileNameandPath= Paths.get(uploadDirectory,originalFileName);
-            Files.write(fileNameandPath, imageFile.getBytes());
-            product.setImage(originalFileName);
-            GoldProduct product1 = service.addProduct(product);
+//            System.out.println(imageFile);
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            GoldProduct product = objectMapper.readValue(productJson, GoldProduct.class);
+//
+//            String originalFileName = imageFile.getOriginalFilename();
+//            Path fileNameandPath= Paths.get(uploadDirectory,originalFileName);
+//            Files.write(fileNameandPath, imageFile.getBytes());
+//            product.setImage(originalFileName);
+            GoldProduct product1 = service.addProduct(productJson);
             return new ResponseEntity<>(product1, HttpStatus.CREATED);
         }
         catch(Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     @PutMapping("/products/update")
     public void updateProduct(@RequestBody GoldProduct product) {

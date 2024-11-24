@@ -1,13 +1,13 @@
 package org.example.goldproduct.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,23 +15,33 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class GoldProduct {
     @Id
-    @Column(name = "huid")
-    private String huid;
-    @Column(name = "productcode")
-    private String productCode;
-    @Column(name = "weight")
-    private double weight;
-    @Column(name = "description")
-    private String Description;
-    @Column(name = "price", precision = 10, scale = 2)
-    private BigDecimal Price;
-    @Column(name = "stocks")
-    private int stocks;
-    @Column(name = "available")
-    private boolean isAvailable;
-    @Column(name = "type")
-    private String type;
-    @Column(name = "image")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long productId;
+
+    @NotBlank
+    @Size(min = 3, message = "Product name must contain atleast 3 characters")
+    private String productName;
+
     private String image;
+
+    @NotBlank
+    @Size(min = 6, message = "Product description must contain atleast 6 characters")
+    private String description;
+
+    private Integer quantity;
+    private double price;
+    private double discount;
+    private double specialPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    private List<CartItem> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<OrderItem> orderItems = new ArrayList<>();
+
 
 }
