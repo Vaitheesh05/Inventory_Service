@@ -2,6 +2,7 @@ package org.example.goldproduct.Model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ public class Category {
     @Size(min = 5, message = "Category name must contain atleast 5 characters")
     private String categoryName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade =  CascadeType.ALL )
     private List<GoldProduct> products;
 
